@@ -41,18 +41,24 @@ export class CheckoutComponent implements OnInit {
                                     Validators.pattern('[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$'),CloneCartValidator.notOnlyWhitespace])
       }),
       shippingAddress : this.formBuilder.group({
-        street: [''],
-        city: [''],
+        street: new FormControl('',[Validators.required, 
+          Validators.minLength(2),CloneCartValidator.notOnlyWhitespace]),
+        city:new FormControl('',[Validators.required, 
+          Validators.minLength(2),CloneCartValidator.notOnlyWhitespace]),
         state: [''],
-        country:[''],
-        pincode: ['']
+        country:new FormControl('',[Validators.required]),
+        pincode: new FormControl('',[Validators.required, 
+                                  Validators.minLength(6),CloneCartValidator.notOnlyWhitespace]),
       }),
       billingAddress : this.formBuilder.group({
-        street: [''],
-        city: [''],
+        street: new FormControl('',[Validators.required, 
+          Validators.minLength(2),CloneCartValidator.notOnlyWhitespace]),
+        city:new FormControl('',[Validators.required, 
+          Validators.minLength(2),CloneCartValidator.notOnlyWhitespace]),
         state: [''],
-        country:[''],
-        pincode: ['']
+        country:new FormControl('',[Validators.required]),
+        pincode: new FormControl('',[Validators.required, 
+                                  Validators.minLength(6),CloneCartValidator.notOnlyWhitespace]),
       }),
       creditCard : this.formBuilder.group({
         cardType: [''],
@@ -90,6 +96,16 @@ export class CheckoutComponent implements OnInit {
   get firstName(){ return this.checkoutFormGroup.get('customer.firstName');}
   get lastName(){ return this.checkoutFormGroup.get('customer.lastName');}
   get email(){ return this.checkoutFormGroup.get('customer.email');}
+
+  get shippingAddressStreet(){ return this.checkoutFormGroup.get('shippingAddress.street');}
+  get shippingAddressCity(){ return this.checkoutFormGroup.get('shippingAddress.city');}
+  get shippingAddressCountry(){ return this.checkoutFormGroup.get('shippingAddress.country');}
+  get shippingAddressPincode(){ return this.checkoutFormGroup.get('shippingAddress.pincode');}
+
+  get billingAddressStreet(){ return this.checkoutFormGroup.get('billingAddress.street');}
+  get billingAddressCity(){ return this.checkoutFormGroup.get('billingAddress.city');}
+  get billingAddressCountry(){ return this.checkoutFormGroup.get('billingAddress.country');}
+  get billingAddressPincode(){ return this.checkoutFormGroup.get('billingAddress.pincode');}
 
 
   copyShippingAddressToBillingAddress(event: Event) {
