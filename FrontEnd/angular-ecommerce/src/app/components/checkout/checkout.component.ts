@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from 'country-state-city';
 import { CloneCartFormServiceService } from 'src/app/services/clone-cart-form-service.service';
+import { CloneCartValidator } from 'src/app/validator/clone-cart-validator';
 
 @Component({
   selector: 'app-checkout',
@@ -32,10 +33,12 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: new FormControl('',[Validators.required, Validators.minLength(2)]),
-        lastName:  new FormControl('',[Validators.required, Validators.minLength(2)]),
+        firstName: new FormControl('',[Validators.required, 
+                                    Validators.minLength(2), CloneCartValidator.notOnlyWhitespace]),
+        lastName:  new FormControl('',[Validators.required, 
+                                  Validators.minLength(2),CloneCartValidator.notOnlyWhitespace]),
         email:  new FormControl('',[Validators.required, 
-                                    Validators.pattern('[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$')])
+                                    Validators.pattern('[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$'),CloneCartValidator.notOnlyWhitespace])
       }),
       shippingAddress : this.formBuilder.group({
         street: [''],
