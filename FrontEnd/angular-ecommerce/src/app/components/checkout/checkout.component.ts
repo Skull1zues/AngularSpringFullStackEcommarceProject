@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from 'country-state-city';
 import { CloneCartFormServiceService } from 'src/app/services/clone-cart-form-service.service';
 
@@ -32,9 +32,10 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: [''],
-        lastName: [''],
-        email: ['']
+        firstName: new FormControl('',[Validators.required, Validators.minLength(2)]),
+        lastName:  new FormControl('',[Validators.required, Validators.minLength(2)]),
+        email:  new FormControl('',[Validators.required, 
+                                    Validators.pattern('[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$')])
       }),
       shippingAddress : this.formBuilder.group({
         street: [''],
@@ -82,6 +83,12 @@ export class CheckoutComponent implements OnInit {
 
 
   }
+
+  get firstName(){ return this.checkoutFormGroup.get('customer.firstName');}
+  get lastName(){ return this.checkoutFormGroup.get('customer.lastName');}
+  get email(){ return this.checkoutFormGroup.get('customer.email');}
+
+
   copyShippingAddressToBillingAddress(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     console.log('Checkbox state:', inputElement.checked);
@@ -95,6 +102,10 @@ export class CheckoutComponent implements OnInit {
 
   onSubmit(){
     console.log("Handling the submit button");
+
+    if(this.checkoutFormGroup.invalid){
+      this.checkoutFormGroup.markAllAsTouched();
+    }
     console.log(this.checkoutFormGroup.get('customer')?.value);
   }
 
