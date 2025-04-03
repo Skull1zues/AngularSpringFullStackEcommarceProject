@@ -305,6 +305,14 @@
                                     <option>Mastercard</option>
                                     <option>Rupay</option>
                                 </select>
+                                <div *ngIf="creditCardType?.invalid && (creditCardType?.dirty||creditCardType?.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div
+                                        *ngIf="creditCardType?.errors?.['required']">
+                                        Card Type is required
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -314,6 +322,19 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="nameOnCard" type="text">
+
+                                <div *ngIf="creditCardNameOfCard?.invalid && (creditCardNameOfCard?.dirty||creditCardNameOfCard?.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div
+                                        *ngIf="creditCardNameOfCard?.errors?.['required'] || creditCardNameOfCard?.errors?.['notOnlyWhitespace']">
+                                        Name is required
+                                    </div>
+                                    <div *ngIf="creditCardNameOfCard?.errors?.['minlength']">
+                                        Card Name must be at least 2 character long
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -323,6 +344,19 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="cardNumber" type="text">
+
+                                <div *ngIf="creditCardNumber?.invalid && (creditCardNumber?.dirty||creditCardNumber?.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div
+                                        *ngIf="creditCardNumber?.errors?.['required'] || creditCardNumber?.errors?.['notOnlyWhitespace']">
+                                        Card Number is required
+                                    </div>
+                                    <div *ngIf="creditCardNumber?.errors?.['pattern']">
+                                        Card Number must be 16 digit long
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -334,6 +368,19 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="cvv" type="password">
+
+                                <div *ngIf="creditCardCvv?.invalid && (creditCardCvv?.dirty||creditCardCvv?.touched)"
+                                class="alert alert-danger mt-1">
+                                <div
+                                    *ngIf="creditCardCvv?.errors?.['required'] || creditCardCvv?.errors?.['notOnlyWhitespace']">
+                                    CVV is required
+                                </div>
+                                <div *ngIf="creditCardCvv?.errors?.['pattern']">
+                                    CVV Number must be 16 digit long
+                                </div>
+                            </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -372,6 +419,7 @@
                     <h3>Review Your Order</h3>
 
                     <p>Total Quantity: {{totalQuantity}}</p>
+                    <p>Shipping: FREE</p>
                     <p>Total Price: {{totalPrice | currency:"INR"}}</p>
                 </div>
 

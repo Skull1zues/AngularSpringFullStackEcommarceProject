@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from 'country-state-city';
+import { CartService } from 'src/app/services/cart.service';
 import { CloneCartFormServiceService } from 'src/app/services/clone-cart-form-service.service';
 import { CloneCartValidator } from 'src/app/validator/clone-cart-validator';
 
@@ -27,10 +28,11 @@ export class CheckoutComponent implements OnInit {
 
   
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder, private cartService: CartService,
               private cloneCartFormService: CloneCartFormServiceService) { }
 
   ngOnInit(): void {
+  
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: new FormControl('',[Validators.required, 
@@ -61,10 +63,11 @@ export class CheckoutComponent implements OnInit {
                                   Validators.minLength(6),CloneCartValidator.notOnlyWhitespace]),
       }),
       creditCard : this.formBuilder.group({
-        cardType: [''],
-        nameOnCard: [''],
-        cardNumber: [''],
-        cvv: [''],
+        cardType: new FormControl('',[Validators.required]),
+        nameOnCard: new FormControl('',[Validators.required, Validators.minLength(2),CloneCartValidator.notOnlyWhitespace]),
+        cardNumber: new FormControl('',[Validators.required, Validators.pattern('[0-9]{16}'),
+                      CloneCartValidator.notOnlyWhitespace]),
+        cvv: new FormControl('',[Validators.required, Validators.pattern('[0-9]{3}')]),
         enpirationMonth:[''],
         enpirationYear:['']
       })
@@ -89,8 +92,18 @@ export class CheckoutComponent implements OnInit {
     );
 
     this.countries = this.cloneCartFormService.getCountries();
+    this.reviewCartDetails();
 
 
+  }
+  reviewCartDetails() {
+    this.cartService.totalQuantity.subscribe(
+      totalQuantity => this.totalQuantity = totalQuantity
+    );
+
+    this.cartService.totalPrice.subscribe(
+      totalPrice => this.totalPrice =totalPrice
+    );
   }
 
   get firstName(){ return this.checkoutFormGroup.get('customer.firstName');}
@@ -106,6 +119,12 @@ export class CheckoutComponent implements OnInit {
   get billingAddressCity(){ return this.checkoutFormGroup.get('billingAddress.city');}
   get billingAddressCountry(){ return this.checkoutFormGroup.get('billingAddress.country');}
   get billingAddressPincode(){ return this.checkoutFormGroup.get('billingAddress.pincode');}
+
+  get creditCardType(){ return this.checkoutFormGroup.get('creditCard.cardType');}
+  get creditCardNameOfCard(){ return this.checkoutFormGroup.get('creditCard.nameOnCard');}
+  get creditCardNumber(){ return this.checkoutFormGroup.get('creditCard.cardNumber');}
+  get creditCardCvv(){ return this.checkoutFormGroup.get('creditCard.cvv');}
+
 
 
   copyShippingAddressToBillingAddress(event: Event) {
@@ -169,6 +188,8 @@ export class CheckoutComponent implements OnInit {
     this.states = this.cloneCartFormService.getStates(this.BillingCountry);
     console.log(this.states);
   }
+
+  
   
 
 }
