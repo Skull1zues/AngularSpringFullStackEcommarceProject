@@ -17,24 +17,12 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
 
-import{
-  OktaAuthModule,
-  OktaCallbackComponent,
-  OKTA_CONFIG,
-  OktaConfig
-} from '@okta/okta-angular';
-
-import { OktaAuth} from '@okta/okta-auth-js';
-
-import myAppConfig from './config/my-app-config';
 import { AppRoutingModule } from './app-routing.module';
+import { MembersPageComponent } from './components/members-page/members-page.component';
 
-const oktaConfig = myAppConfig.oidc;
-
-const oktaAuth = new OktaAuth(oktaConfig);
 
 const routes: Routes = [
-  
+  {path: 'members',component: MembersPageComponent},
   {path: 'loginc', component: LoginStatusComponent},
 
   {path: 'checkout', component: CheckoutComponent},
@@ -58,7 +46,8 @@ const routes: Routes = [
     CartStatusComponent,
     CartDetailsComponent,
     CheckoutComponent,
-    LoginStatusComponent
+    LoginStatusComponent,
+    MembersPageComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

@@ -34,14 +34,14 @@ public class AuthController {
     public ResponseEntity<Map<String,Object>> signin(@AuthenticationPrincipal OidcUser oidcUser) {
 
 
-        System.out.println("abc");
+        /*System.out.println("abc");
 
 
 
         String returnTo = URLEncoder.encode(logoutRedirect, StandardCharsets.UTF_8);
         String logoutUrl = issuerUri+ "v2/logout?client_id="+clientId+"&returnTo="+returnTo;
         System.out.println("logoutUrl:-"+logoutUrl);
-
+*/
         if(oidcUser.getFullName()!=null){
             return ResponseEntity.ok(Map.of("username", oidcUser.getFullName(),"isAuthenticated",true));
         }else{

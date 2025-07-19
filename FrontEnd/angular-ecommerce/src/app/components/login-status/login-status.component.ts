@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { OktaAuthStateService, OKTA_AUTH } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
 
@@ -13,7 +14,7 @@ export class LoginStatusComponent implements OnInit {
   isAuthenticated: boolean = false;
   userFullName: string = '';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.checkAuth();
@@ -48,6 +49,13 @@ export class LoginStatusComponent implements OnInit {
     this.userFullName = '';
     this.isAuthenticated = false;
 
+  }
+  members(){
+    if(this.isAuthenticated){
+      this.router.navigate(['/members']);
+    }else{
+      this.login();
+    }
   }
 
 
