@@ -42,7 +42,7 @@ public class AuthController {
         String logoutUrl = issuerUri+ "v2/logout?client_id="+clientId+"&returnTo="+returnTo;
         System.out.println("logoutUrl:-"+logoutUrl);
 */
-        if(oidcUser.getFullName()!=null){
+        if(oidcUser!=null){
             return ResponseEntity.ok(Map.of("username", oidcUser.getFullName(),"isAuthenticated",true));
         }else{
             return ResponseEntity.ok(Map.of("username", "","isAuthenticated",false));

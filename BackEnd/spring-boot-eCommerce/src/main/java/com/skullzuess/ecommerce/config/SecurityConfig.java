@@ -52,7 +52,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String returnTo = URLEncoder.encode(logoutRedirect, StandardCharsets.UTF_8);
         String logoutUrl = issuerUri+ "/v2/logout?client_id="+clientId+"&returnTo="+returnTo;
-        http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
+        http.cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .oauth2Login(auth -> auth.defaultSuccessUrl("http://localhost:4200/",true))
         .logout(logout -> logout.logoutSuccessUrl(logoutUrl).clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID"));

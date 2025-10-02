@@ -85,7 +85,7 @@ class Solution {
         // code here
     }
 }
-public class NumberOfDaysInMonth {
+class NumberOfDaysInMonth {
     public static boolean isLeapYear(int year){
         if(year>0 && year<=9999){
             if(year%400==0){
@@ -98,13 +98,13 @@ public class NumberOfDaysInMonth {
             return false;
         }
     }
-    public static void getDaysInMonth(int month, int year){
+    public static int getDaysInMonth(int month, int year){
         if(month>0 && month<=12 && year>=1 && year <=9999){
             return switch(month){
                 case 1 -> 31;
                 case 2 -> {
                     if(isLeapYear(year)){
-                        yeild 29;
+                        yield 29;
                     }else{
                         yield 28;
                     }
@@ -119,7 +119,8 @@ public class NumberOfDaysInMonth {
                 case 10 -> 31;
                 case 11 -> 30;
                 case 12 -> 31;
-            }
+                default -> -1;
+            };
         }else{
             return -1;
         }
