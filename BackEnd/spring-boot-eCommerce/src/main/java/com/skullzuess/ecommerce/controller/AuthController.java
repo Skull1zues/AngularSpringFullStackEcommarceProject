@@ -1,9 +1,14 @@
 package com.skullzuess.ecommerce.controller;
 
+import com.skullzuess.ecommerce.entity.Order;
+import com.skullzuess.ecommerce.service.CheckoutService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -17,8 +22,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-@CrossOrigin("http://localhost:4200")
+//@CrossOrigin("http://localhost:4200")
 @RestController
 public class AuthController {
     @Value("${spring.security.oauth2.client.registration.okta.client-id}")
@@ -29,6 +35,9 @@ public class AuthController {
 
     @Value("${spring.security.oauth2.client.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
+
+    @Autowired
+    private CheckoutService checkoutService;
 
     @GetMapping("/signin")
     public ResponseEntity<Map<String,Object>> signin(@AuthenticationPrincipal OidcUser oidcUser) {
@@ -43,7 +52,7 @@ public class AuthController {
         System.out.println("logoutUrl:-"+logoutUrl);
 */
         if(oidcUser!=null){
-            return ResponseEntity.ok(Map.of("username", oidcUser.getFullName(),"isAuthenticated",true));
+            return ResponseEntity.ok(Map.of("username", oidcUser.getFullName(),"UserEmail",oidcUser.getEmail(),"isAuthenticated",true));
         }else{
             return ResponseEntity.ok(Map.of("username", "","isAuthenticated",false));
         }
@@ -61,6 +70,19 @@ public class AuthController {
         System.out.println("logoutUrl:-"+logoutUrl);*/
         return ResponseEntity.ok().build();
 
+    }
+
+    @GetMapping("api/order/search/findByCustomerEmail")
+    public ResponseEntity<?> getOrdersForLoggedPerson(@AuthenticationPrincipal OidcUser oidcUser,
+                                                      Pageable pageable){
+        if(oidcUser!=null) {
+            String email = oidcUser.getEmail();
+            Page<Order> orders = checkoutService.getOrdersForLoggedPerson(email, pageable);
+            System.out.println(orders.getContent());
+            return ResponseEntity.ok(orders);
+        }else{
+            return ResponseEntity.ok(Map.of("order", "Please Log in to see the order details"));
+        }
     }
 
 }

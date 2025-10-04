@@ -1,9 +1,11 @@
 package com.skullzuess.ecommerce.config;
 
+import com.skullzuess.ecommerce.entity.Order;
 import com.skullzuess.ecommerce.entity.Product;
 import com.skullzuess.ecommerce.entity.ProductCategory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -23,23 +25,35 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         entityManager = theEntityManager;
     }
 
+    @Value("${allowed.origins}")
+    private String allowedOrigins;
+
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-        HttpMethod[] theUnsupportedMethod = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
+
+        HttpMethod[] theUnsupportedMethod = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH};
 
         // disable HTTP method for product: PUT, POST, DELETE
-        config.getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(theUnsupportedMethod)))
-                .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(theUnsupportedMethod)));
-
+        disableHttpMethod(Product.class,config,theUnsupportedMethod);
         // disable HTTP method for productCategory: PUT, POST, DELETE
-        config.getExposureConfiguration()
-                .forDomainType(ProductCategory.class)
-                .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(theUnsupportedMethod)))
-                .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(theUnsupportedMethod)));
+        disableHttpMethod(ProductCategory.class,config,theUnsupportedMethod);
+        //disable HTTP method for OrderDetails
+        //disableHttpMethod(Order.class,config,theUnsupportedMethod);
+
+
         //call the internal helper method
         exposeIds(config);
+        //Configuring CROS mapping for spring data rest
+        cors.addMapping("/api/**").allowedOrigins(allowedOrigins);
+
+    }
+
+    private void disableHttpMethod(Class theClass,RepositoryRestConfiguration config, HttpMethod[] disableMethod){
+        config.getExposureConfiguration()
+                .forDomainType(theClass)
+                .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(disableMethod)))
+                .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(disableMethod)));
+
     }
 
     private void exposeIds(RepositoryRestConfiguration config) {

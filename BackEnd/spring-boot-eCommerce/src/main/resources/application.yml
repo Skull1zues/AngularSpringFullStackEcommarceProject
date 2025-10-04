@@ -1,6 +1,7 @@
 server:
   port: 8080
-
+allowed:
+  origins: http://localhost:4200
 spring:
   security:
     oauth2:

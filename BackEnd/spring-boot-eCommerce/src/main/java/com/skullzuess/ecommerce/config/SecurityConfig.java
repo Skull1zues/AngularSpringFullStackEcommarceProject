@@ -103,7 +103,7 @@ public class SecurityConfig {
     }
 
 
-    @Bean
+    /*@Bean
     public WebMvcConfigurer corsConfiger(){
 
         WebMvcConfigurer webMvcConfigurer =     new WebMvcConfigurer(){
@@ -116,7 +116,7 @@ public class SecurityConfig {
             }
         };
         return webMvcConfigurer;
-    }
+    }*/
 
 
 }

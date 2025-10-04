@@ -10,7 +10,7 @@ export class OrderItem {
     constructor(cartItem: CartItem){
         this.imageUrl =cartItem.imageUrl;
         this.unitPrice = cartItem.unitPrice;
-        this.quantity = cartItem.unitPrice;
+        this.quantity = cartItem.quantity;
         this.productId = cartItem.id;
     }
 }
