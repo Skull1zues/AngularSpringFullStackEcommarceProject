@@ -15,7 +15,17 @@ export class CartService {
   // Subject is a subclass of Observable . We can use subject to  publish event in our code. 
   // This event will sent to all of the subcriber.
 
-  constructor() { }
+  //storage: Storage = sessionStorage;
+  storage: Storage = localStorage;
+
+  constructor(){
+    // read data from storage
+    let data = JSON.parse(this.storage.getItem('cartItems')!);
+    if (data) {
+      this.cartItems = data;
+      this.computeCartTotals();
+    }
+  }
 
   addToCart(theCartItem: CartItem) {
     // check if already have an item in the cart
@@ -62,8 +72,15 @@ export class CartService {
 
     // log cart data for debugging purpose
     this.logCartData(totalPriceValue,totalQuantityValue);
+    // persist cart data
+    this.persistCartItems();
 
   }
+
+persistCartItems() {
+    this.storage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
+
   logCartData(totalPriceValue: number, totalQuantityValue: number) {
     console.log('COntents of the cart');
     for (let tempCartItem of this.cartItems){
@@ -85,8 +102,9 @@ export class CartService {
     const itemIndex = this.cartItems.findIndex(
                       tempCartItem => tempCartItem.id == theCartItem.id);
     // If found, remove it from the array at the given index
-    if(itemIndex>-1){
+    if(itemIndex > -1){
       this.cartItems.splice(itemIndex,1);
+      this.computeCartTotals(); // Add this line to update totals and persist changes
     }
   }
 }
