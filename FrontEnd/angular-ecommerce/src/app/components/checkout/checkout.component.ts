@@ -16,6 +16,7 @@ import { CloneCartValidator } from 'src/app/validator/clone-cart-validator';
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
+  storage: Storage = sessionStorage;
   isAuthenticated: boolean = false;
 
   checkoutFormGroup!: FormGroup;

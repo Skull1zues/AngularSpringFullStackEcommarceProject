@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.oidc.authentication.OidcIdTokenDecoderFactory;
@@ -52,27 +53,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String returnTo = URLEncoder.encode(logoutRedirect, StandardCharsets.UTF_8);
-        String logoutUrl = issuerUri+ "/v2/logout?client_id="+clientId+"&returnTo="+returnTo;
-        http.cors(cors -> cors.disable())
-                //.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/**","/signin").permitAll())
-                .oauth2Login(auth -> auth.defaultSuccessUrl("http://localhost:4200/",true))
-        .logout(logout -> logout.logoutSuccessUrl(logoutUrl)
-                                                            .clearAuthentication(true)
-                                                            .invalidateHttpSession(true)
-                                    .deleteCookies("JSESSIONID"));
+        String logoutUrl = issuerUri + "/v2/logout?client_id=" + clientId + "&returnTo=" + returnTo;
+
+        http
+                .cors(Customizer.withDefaults())   // ✅ enable CORS
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .oauth2Login(auth -> auth.defaultSuccessUrl("https://localhost:4200/", true))
+                .logout(logout -> logout
+                        .logoutSuccessUrl(logoutUrl)
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                );
 
         return http.build();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
-        config.setAllowedMethods(List.of("*"));
+        config.setAllowedOrigins(List.of("https://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",config);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 

@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Purchase } from '../common/purchase';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
+const theBackEndUrl = environment.cloneCartApiUrl;
 @Injectable({
   providedIn: 'root'
 })
 export class CheckoutService {
 
-  private purchaseUrl = 'http://localhost:8080/api/checkout/purchase';
+  private purchaseUrl = `${theBackEndUrl}/api/checkout/purchase`;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -17,6 +19,6 @@ export class CheckoutService {
   }
 
   getUserEmail(): Observable<any> {
-    return this.httpClient.get<any>('http://localhost:8080/signin', { withCredentials: true });
+    return this.httpClient.get<any>(`${theBackEndUrl}/signin`, { withCredentials: true });
   }
 }

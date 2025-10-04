@@ -1,7 +1,7 @@
 server:
-  port: 8080
+  port: 8443
 allowed:
-  origins: http://localhost:4200
+  origins: https://localhost:4200
 spring:
   security:
     oauth2:
@@ -14,7 +14,7 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/okta"
             client-name: Okta
             authorization-grant-type: authorization_code
-            logout-redirect: http://localhost:4200
+            logout-redirect: https://localhost:4200
         provider:
           okta:
             authorization-uri: https://dev-e8vigvs7hi8lgvvj.us.auth0.com/authorize

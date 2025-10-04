@@ -4,7 +4,8 @@ import { Product } from '../common/product';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ProductCategory } from '../common/product-category';
-
+import { environment } from 'src/environments/environment';
+const theBackEndUrl = environment.cloneCartApiUrl;
 @Injectable({
   providedIn: 'root'
 })
@@ -13,9 +14,9 @@ export class ProductService {
   
   
 
-  private baseUrl = 'http://localhost:8080/api/products';
+  private baseUrl = `${theBackEndUrl}/api/products`;
 
-  private categoryUrl = 'http://localhost:8080/api/product-category'
+  private categoryUrl = `${theBackEndUrl}/api/product-category`;
 
   constructor(private httpClient: HttpClient) { }
 

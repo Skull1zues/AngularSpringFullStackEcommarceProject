@@ -3,12 +3,15 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OktaAuthStateService, OKTA_AUTH } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
+import { environment } from 'src/environments/environment';
 
+const theBackEndUrl = environment.cloneCartApiUrl;
 @Component({
   selector: 'app-login-status',
   templateUrl: './login-status.component.html',
   styleUrls: ['./login-status.component.css']
 })
+
 export class LoginStatusComponent implements OnInit {
 
   isAuthenticated: boolean = false;
@@ -17,6 +20,7 @@ export class LoginStatusComponent implements OnInit {
 
   storage: Storage = sessionStorage;
   storage2: Storage = localStorage;
+  
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -34,9 +38,9 @@ export class LoginStatusComponent implements OnInit {
   }
   checkAuth() {
     this.httpClient.get<any>(
-      'http://localhost:8080/signin',{withCredentials: true}
+      `${theBackEndUrl}/signin`, { withCredentials: true }
     ).subscribe(
-      data=>{
+      data => {
         this.userFullName = data.username;
         this.isAuthenticated = data.isAuthenticated;
         this.userEmail = data.UserEmail; 
@@ -45,13 +49,11 @@ export class LoginStatusComponent implements OnInit {
     );
   }
   login(){
-    window.location.href = 'http://localhost:8080/oauth2/authorization/okta'
+    window.location.href = `${theBackEndUrl}/oauth2/authorization/okta`
   }
 
   logout(){
-    
-    
-    window.location.href = 'http://localhost:8080/logout'
+    window.location.href = `${theBackEndUrl}/logout`
     this.userFullName = '';
     this.isAuthenticated = false;
     this.storage.clear();

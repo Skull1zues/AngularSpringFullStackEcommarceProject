@@ -44,7 +44,6 @@ public class Order {
     private Date lastUpdated;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    @JsonManagedReference
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne
