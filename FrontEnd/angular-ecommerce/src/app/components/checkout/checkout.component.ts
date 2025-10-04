@@ -16,7 +16,7 @@ import { CloneCartValidator } from 'src/app/validator/clone-cart-validator';
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
-
+  isAuthenticated: boolean = false;
 
   checkoutFormGroup!: FormGroup;
 
@@ -39,6 +39,23 @@ export class CheckoutComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
+    // Get user email if authenticated
+    this.checkOutService.getUserEmail().subscribe(
+      data => {
+        this.isAuthenticated = data.isAuthenticated;
+        if (data.isAuthenticated) {
+          this.checkoutFormGroup.patchValue({
+            customer: {
+              email: data.UserEmail
+            }
+          });
+          // Make email field readonly when authenticated
+          this.checkoutFormGroup.get('customer.email')?.disable();
+        } else {
+          alert('To track the order please signin with the same emailId');
+        }
+      }
+    );
   
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
@@ -160,28 +177,22 @@ export class CheckoutComponent implements OnInit {
     // get Cart Item
     const cartItems = this.cartService.cartItems;
 
-
     // create orderItems for cartItems
     let orderItems: OrderItem[] = cartItems.map(orderItem => new OrderItem(orderItem));
-
 
     // set up purchase
     let purchase = new Purchase();
 
-
-    // populate purchase - customer
-    purchase.customer = this.checkoutFormGroup.controls['customer'].value;
-
+    // populate purchase - customer (including disabled fields)
+    purchase.customer = this.checkoutFormGroup.get('customer')?.getRawValue();
 
     // populate purchase - shipping address
     purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value;
 
-    // populate purchase - shipping address
+    // populate purchase - billing address
     purchase.billingAddress = this.checkoutFormGroup.controls['billingAddress'].value;
 
-
     // populate purchase - order and orderItems
-
     purchase.order = order;
     purchase.orderItems = orderItems;
 

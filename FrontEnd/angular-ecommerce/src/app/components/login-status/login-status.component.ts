@@ -13,6 +13,7 @@ export class LoginStatusComponent implements OnInit {
 
   isAuthenticated: boolean = false;
   userFullName: string = '';
+  userEmail: string = '';
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -35,6 +36,7 @@ export class LoginStatusComponent implements OnInit {
       data=>{
         this.userFullName = data.username;
         this.isAuthenticated = data.isAuthenticated;
+        this.userEmail = data.UserEmail;  // Changed from email to UserEmail to match API response
       
     });
   }

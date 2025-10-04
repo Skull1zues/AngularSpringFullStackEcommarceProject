@@ -15,4 +15,8 @@ export class CheckoutService {
   placeOrder(purchase: Purchase): Observable<any>{
     return this.httpClient.post<Purchase>(this.purchaseUrl, purchase);
   }
+
+  getUserEmail(): Observable<any> {
+    return this.httpClient.get<any>('http://localhost:8080/signin', { withCredentials: true });
+  }
 }
