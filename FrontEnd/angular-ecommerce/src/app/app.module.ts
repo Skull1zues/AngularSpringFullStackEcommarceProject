@@ -19,10 +19,12 @@ import { LoginStatusComponent } from './components/login-status/login-status.com
 
 import { AppRoutingModule } from './app-routing.module';
 import { MembersPageComponent } from './components/members-page/members-page.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 
 const routes: Routes = [
   {path: 'members',component: MembersPageComponent},
+  {path: 'order-history',component: OrderHistoryComponent},
   {path: 'loginc', component: LoginStatusComponent},
 
   {path: 'checkout', component: CheckoutComponent},
@@ -47,7 +49,8 @@ const routes: Routes = [
     CartDetailsComponent,
     CheckoutComponent,
     LoginStatusComponent,
-    MembersPageComponent
+    MembersPageComponent,
+    OrderHistoryComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

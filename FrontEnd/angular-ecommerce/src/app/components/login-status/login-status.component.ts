@@ -15,6 +15,9 @@ export class LoginStatusComponent implements OnInit {
   userFullName: string = '';
   userEmail: string = '';
 
+  storage: Storage = sessionStorage;
+  storage2: Storage = localStorage;
+
   constructor(private httpClient: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
@@ -36,9 +39,10 @@ export class LoginStatusComponent implements OnInit {
       data=>{
         this.userFullName = data.username;
         this.isAuthenticated = data.isAuthenticated;
-        this.userEmail = data.UserEmail;  // Changed from email to UserEmail to match API response
-      
-    });
+        this.userEmail = data.UserEmail; 
+        this.storage.setItem('userEmail', this.userEmail);
+      }
+    );
   }
   login(){
     window.location.href = 'http://localhost:8080/oauth2/authorization/okta'
@@ -50,6 +54,8 @@ export class LoginStatusComponent implements OnInit {
     window.location.href = 'http://localhost:8080/logout'
     this.userFullName = '';
     this.isAuthenticated = false;
+    this.storage.clear();
+    this.storage2.clear();
 
   }
   members(){
