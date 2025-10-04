@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -67,9 +68,9 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public Page<Order> getOrdersForLoggedPerson(String email,Pageable pageable) {
+    public List<Order> getOrdersForLoggedPerson(String email) {
 
-        Page<Order> orders = orderRepository.findByCustomerEmail(email,pageable);
+        List<Order> orders = orderRepository.findByCustomerEmailOrderByDateCreatedDesc(email);
         return orders;
     }
 

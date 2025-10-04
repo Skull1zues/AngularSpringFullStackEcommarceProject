@@ -1,6 +1,9 @@
 package com.skullzuess.ecommerce.controller;
 
+import com.skullzuess.ecommerce.dto.OrderDTO;
+import com.skullzuess.ecommerce.dto.OrderMapper;
 import com.skullzuess.ecommerce.entity.Order;
+import com.skullzuess.ecommerce.entity.OrderItem;
 import com.skullzuess.ecommerce.service.CheckoutService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -21,6 +25,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +43,12 @@ public class AuthController {
 
     @Autowired
     private CheckoutService checkoutService;
+
+    private final OrderMapper orderMapper;
+
+    public AuthController(OrderMapper orderMapper) {
+        this.orderMapper = orderMapper;
+    }
 
     @GetMapping("/signin")
     public ResponseEntity<Map<String,Object>> signin(@AuthenticationPrincipal OidcUser oidcUser) {
@@ -77,11 +88,14 @@ public class AuthController {
                                                       Pageable pageable){
         if(oidcUser!=null) {
             String email = oidcUser.getEmail();
-            Page<Order> orders = checkoutService.getOrdersForLoggedPerson(email, pageable);
-            System.out.println(orders.getContent());
-            return ResponseEntity.ok(orders);
+            List<Order> orders = checkoutService.getOrdersForLoggedPerson(email);
+            List<OrderDTO> orderDTOS = orders.stream().map(orderMapper::toDto).toList();
+
+
+            System.out.println(orderDTOS);
+            return ResponseEntity.ok(orderDTOS);
         }else{
-            return ResponseEntity.ok(Map.of("order", "Please Log in to see the order details"));
+            return new ResponseEntity(Map.of("order", "Please Log in to see the order details"),HttpStatus.FORBIDDEN);
         }
     }
 

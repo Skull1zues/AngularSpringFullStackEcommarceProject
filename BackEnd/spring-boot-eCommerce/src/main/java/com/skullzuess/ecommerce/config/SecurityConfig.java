@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoderFactory;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -53,10 +54,13 @@ public class SecurityConfig {
         String returnTo = URLEncoder.encode(logoutRedirect, StandardCharsets.UTF_8);
         String logoutUrl = issuerUri+ "/v2/logout?client_id="+clientId+"&returnTo="+returnTo;
         http.cors(cors -> cors.disable())
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                //.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/**","/signin").permitAll())
                 .oauth2Login(auth -> auth.defaultSuccessUrl("http://localhost:4200/",true))
-        .logout(logout -> logout.logoutSuccessUrl(logoutUrl).clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID"));
+        .logout(logout -> logout.logoutSuccessUrl(logoutUrl)
+                                                            .clearAuthentication(true)
+                                                            .invalidateHttpSession(true)
+                                    .deleteCookies("JSESSIONID"));
 
         return http.build();
     }

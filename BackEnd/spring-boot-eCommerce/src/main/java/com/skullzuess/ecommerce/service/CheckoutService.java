@@ -6,7 +6,9 @@ import com.skullzuess.ecommerce.entity.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface CheckoutService {
     PurchaseResponse placeOrder(Purchase purchase);
-    Page<Order> getOrdersForLoggedPerson(String email,Pageable pageable);
+    List<Order> getOrdersForLoggedPerson(String email);
 }
