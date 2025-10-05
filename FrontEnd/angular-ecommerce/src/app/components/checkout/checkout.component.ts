@@ -40,7 +40,8 @@ export class CheckoutComponent implements OnInit {
   stripe = Stripe(environment.stripePublishableKey);
   paymentInfo!: PaymentInfo;
   cardElement: any;
-displayErrors: any = "";
+  displayErrors: any = "";
+  isDisabled: boolean = false;
   
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
@@ -246,7 +247,7 @@ displayErrors: any = "";
     const roundedPrice = parseFloat(this.totalPrice.toFixed(2));
 
 
-    this.paymentInfo = new PaymentInfo(roundedPrice * 100,"INR");
+    this.paymentInfo = new PaymentInfo(roundedPrice * 100,"INR",purchase.customer.email);
     // compute payment info
 
 
@@ -258,6 +259,8 @@ displayErrors: any = "";
     console.log(this.paymentInfo);
 
     if (!this.checkoutFormGroup.invalid && this.displayErrors.textContent === "") {
+
+      this.isDisabled=true;
       console.log("Inside the if condition");
 
       this.checkOutService.createPaymentIntent(this.paymentInfo).subscribe(
@@ -282,12 +285,14 @@ displayErrors: any = "";
             if (result.error) {
               // inform the customer there was an error
               alert(`There was an error: ${result.error.message}`);
+              this.isDisabled = false;
             } else {
               
               // call REST API via the CheckoutService
               this.checkOutService.placeOrder(purchase).subscribe({
                 next: response => {
                   alert(`Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`);
+                  this.isDisabled = false;
 
                   // reset cart
                   this.resetCart();
@@ -295,6 +300,7 @@ displayErrors: any = "";
                 },
                 error: err => {
                   alert(`There was an error: ${err.message}`);
+                  this.isDisabled = true;
                 }
               })
             }            
