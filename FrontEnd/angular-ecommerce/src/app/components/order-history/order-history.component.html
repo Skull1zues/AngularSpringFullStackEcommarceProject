@@ -18,7 +18,7 @@
                                 <tr *ngFor="let order of orderHistoryList">
                                     <td>{{ order.orderTrackingNumber }}</td>
                                     <td>{{ order.dateCreated | date:'medium' }}</td>
-                                    <td>{{ order.totalPrice | currency }}</td>
+                                    <td>{{ order.totalPrice | currency:'INR':'symbol':'1.2-2' }}</td>
                                     <td>{{ order.totalQuantity }}</td>
                                 </tr>
                             </tbody>

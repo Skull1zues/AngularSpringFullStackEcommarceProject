@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Purchase } from '../common/purchase';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { PaymentInfo } from '../common/payment-info';
 
 const theBackEndUrl = environment.cloneCartApiUrl;
 @Injectable({
@@ -12,6 +13,8 @@ export class CheckoutService {
 
   private purchaseUrl = `${theBackEndUrl}/api/checkout/purchase`;
 
+  private paymentIntentUrl = `${theBackEndUrl}/api/checkout/payment-intent`;
+
   constructor(private httpClient: HttpClient) { }
 
   placeOrder(purchase: Purchase): Observable<any>{
@@ -20,5 +23,9 @@ export class CheckoutService {
 
   getUserEmail(): Observable<any> {
     return this.httpClient.get<any>(`${theBackEndUrl}/signin`, { withCredentials: true });
+  }
+
+  createPaymentIntent(paymentInfo: PaymentInfo): Observable<any> {
+    return this.httpClient.post<PaymentInfo>(this.paymentIntentUrl, paymentInfo);
   }
 }
